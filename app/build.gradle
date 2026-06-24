@@ -5,12 +5,12 @@ plugins {
 }
 
 group = 'com.cccstudio'
-version = '0.0.1-SNAPSHOT'
+version = '${version}'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.github.CCCStudioCoder:ChessVikingVariants:0.1.2'
+    implementation 'com.github.CCCStudioCoder:ChessVikingVariants:${version}'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation platform('org.junit:junit-bom:5.10.0')
