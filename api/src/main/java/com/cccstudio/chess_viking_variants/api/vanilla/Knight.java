@@ -1,6 +1,6 @@
 package com.cccstudio.chess_viking_variants.api.vanilla;
 
-import com.cccstudio.chess_viking_variants.Languages;
+import com.cccstudio.chess_viking_variants.api.Languages;
 import com.cccstudio.chess_viking_variants.api.Board;
 import com.cccstudio.chess_viking_variants.api.CasePos;
 import com.cccstudio.chess_viking_variants.api.Move;

@@ -1,7 +1,5 @@
 package com.cccstudio.chess_viking_variants.api;
 
-import com.cccstudio.chess_viking_variants.Languages;
-
 import java.net.URL;
 import java.util.Set;
 

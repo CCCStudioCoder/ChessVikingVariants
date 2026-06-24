@@ -1,6 +1,5 @@
 package com.cccstudio.chess_viking_variants.api;
 
-import com.cccstudio.chess_viking_variants.Languages;
 import com.cccstudio.chess_viking_variants.api.vanilla.Pawn;
 
 import java.util.Set;

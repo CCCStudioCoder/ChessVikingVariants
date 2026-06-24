@@ -1,7 +1,5 @@
 package com.cccstudio.chess_viking_variants.api;
 
-import com.cccstudio.chess_viking_variants.Languages;
-
 /**
  * This class is used the convert {@code .pgn4} files into games and vice versa.
  */
