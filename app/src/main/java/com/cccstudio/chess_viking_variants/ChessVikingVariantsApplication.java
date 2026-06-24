@@ -1,4 +1,4 @@
-package chess_viking_variants;
+package com.cccstudio.chess_viking_variants;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
