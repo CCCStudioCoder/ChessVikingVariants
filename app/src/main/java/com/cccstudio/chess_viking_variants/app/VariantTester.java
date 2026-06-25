@@ -1,9 +1,7 @@
-package com.cccstudio.chess_viking_variants.api.test;
+package com.cccstudio.chess_viking_variants.app;
 
 import com.cccstudio.chess_viking_variants.api.PlayContext;
 import com.cccstudio.chess_viking_variants.api.Variant;
-
-import com.cccstudio.chess_viking_variants.app.ChessVikingVariantsApplication;
 
 public final class VariantTester {
 
@@ -11,7 +9,7 @@ public final class VariantTester {
 
     public static void test(Variant variant) {
         PlayContext.get().registerOrSetField("variant", Variant.class, variant);
-        ChessVikingVariantsApplication.main({});
+        ChessVikingVariantsApplication.main(new String[] {});
     }
 
 }
