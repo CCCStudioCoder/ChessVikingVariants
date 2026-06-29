@@ -1,14 +1,17 @@
 package com.cccstudio.chess_viking_variants.api;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map;
+import com.cccstudio.chess_viking_variants.api.event.*;
+import com.cccstudio.chess_viking_variants.api.vanilla.events.*;
+import com.cccstudio.chess_viking_variants.api.vanilla.pieces.King;
 
-public abstract class Board {
+import java.util.*;
+import java.util.stream.Collectors;
+
+public abstract class Board implements Cloneable {
 
     public Map<PieceType, Byte[]> bitboards;
 
-    private final LinkedHashSet<CasePos> setup;
+    protected final LinkedHashSet<CasePos> setup;
 
     public Board() {
         this.bitboards = buildBoard();
@@ -49,7 +52,7 @@ public abstract class Board {
 
     public PieceInstance getPieceAt(int x, int y) throws CaseOutOfBoardException {
         int i = indexOf(x, y);
-        for(Map.Entry<PieceType, Byte[]> entry : this.bitboards.entrySet()) {
+        for(Map.Entry<? extends PieceType, Byte[]> entry : this.bitboards.entrySet()) {
             if(entry.getValue()[i] != 0) {
                 return new PieceInstance(entry.getKey(), entry.getValue()[i]);
             }
@@ -59,18 +62,9 @@ public abstract class Board {
 
     private boolean checkCaptures(Byte[] bitboard, int x, int y, int i) {
         if(bitboard[i] != 0) {
-            PlayContext.get().registerOrSetField(
-                    "last-piece-captured-owner",
-                    Byte.class,
-                    bitboard[i]
+            return EventRegistry.get().fireCancellable(
+                    new PieceCapturedEvent(bitboard[i], new CasePos(x, y))
             );
-            PlayContext.get().registerOrSetField(
-                    "last-piece-captured-position",
-                    CasePos.class,
-                    new CasePos(x, y)
-            );
-            if(Rule.applyListenersOf(Rule.Type.BEFORE_PIECE_CAPTURED)) return true;
-            Rule.applyListenersOf(Rule.Type.AFTER_PIECE_CAPTURED);
         }
         return false;
     }
@@ -108,11 +102,9 @@ public abstract class Board {
                 Move.class,
                 move
         );
-        if(Rule.applyListenersOf(Rule.Type.BEFORE_MOVE_COMPLETED)) return;
+        if(!EventRegistry.get().fireCancellable(new MoveCompletedEvent(move))) return;
 
         this.bitboards = move.apply(this);
-
-        Rule.applyListenersOf(Rule.Type.AFTER_MOVE_COMPLETED);
 
         int newTurn = move.passTurn();
 
@@ -121,8 +113,93 @@ public abstract class Board {
                 Integer.class,
                 newTurn
         );
-        if(newTurn == 0) Rule.applyListenersOf(Rule.Type.ON_GLOBAL_TURN_START);
-        Rule.applyListenersOf(Rule.Type.ON_SOMEONE_S_TURN_START);
+        if(newTurn == 0) EventRegistry.get().fire(new GlobalTurnStartedEvent());
+        EventRegistry.get().fire(new SomeoneSTurnStartedEvent());
     }
+
+    public CasePos kingPos(byte player) {
+        return new CasePos(Arrays.asList(Objects.requireNonNull(bitboards.get(new King())))
+                .indexOf(player));
+    }
+
+    public Set<CasePos> potentiallyPinnedPieces(byte player) {
+        Set<CasePos> potentiallyPinned = new LinkedHashSet<>();
+        CasePos kingPos = this.kingPos(player);
+
+        for(PieceType type : this.bitboards.keySet()) {
+            Set<Move> lines = type.getPseudoMoves(kingPos, (byte) (player == 1 ? 2 : 1), this);
+            potentiallyPinned.addAll(lines.stream().map(Move::destination)
+                    .filter(destination ->
+                            this.getPieceAt(destination).owner == player)
+                    .collect(Collectors.toSet()));
+        }
+
+        return potentiallyPinned;
+    }
+
+    public boolean verifyChecks(byte player, Move move) {
+        Board ifPlayed = this.clone();
+        EventRegistry.get().setSendingMode(false);
+        ifPlayed.applyMove(move);
+        EventRegistry.get().setSendingMode(true);
+
+        return ifPlayed.verifyChecks(player);
+    }
+
+    public boolean verifyChecks(byte player) {
+        CasePos kingPos = this.kingPos(player);
+
+        for(PieceType type : this.bitboards.keySet()) {
+            Set<Move> lines = type.getPseudoMoves(kingPos, player, this);
+            if(lines.stream().anyMatch(line -> {
+                        PieceInstance piece = this.getPieceAt(line.destination());
+                        return piece.owner != player && piece.pieceType.equals(type);
+                    }
+                    )) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Set<Move> getAvailableMoves(byte player) {
+        Set<Move> moves = new LinkedHashSet<>();
+
+        boolean isItCheck = this.verifyChecks(player);
+        Set<CasePos> potentiallyPinnedPieces = this.potentiallyPinnedPieces(player);
+
+        for(Map.Entry<PieceType, Byte[]> entry : this.bitboards.entrySet()) {
+            PieceType type = entry.getKey();
+            Byte[] bitboard = entry.getValue();
+
+            for(int i = 0; i < bitboard.length; i++) {
+                byte owner = bitboard[i];
+                CasePos pos = new CasePos(i);
+                PieceInstance piece = new PieceInstance(type, owner);
+
+                if(owner == 0) continue;
+                if(owner != player &&
+                    !EventRegistry.get().fireCancellable(new PieceMovementDeniedEvent(
+                            piece, PieceMovementDeniedEvent.OTHER_S_PIECE
+                    ))) continue;
+
+                for(Move move : type.getPseudoMoves(pos, player, this)) {
+                    if(isItCheck || potentiallyPinnedPieces.contains(pos)) {
+                        if(!verifyChecks(player, move) &&
+                                EventRegistry.get().fireCancellable(new MoveRejectedBecauseOfCheckEvent(move))) {
+                            continue;
+                        }
+                    }
+
+                    moves.add(move);
+                }
+            }
+        }
+        return EventRegistry.get().fireEditable(new ComputeLegalMovesEvent(moves));
+    }
+
+    @Override
+    public abstract Board clone();
 
 }

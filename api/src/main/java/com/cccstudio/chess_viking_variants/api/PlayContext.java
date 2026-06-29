@@ -1,5 +1,6 @@
 package com.cccstudio.chess_viking_variants.api;
 
+import com.cccstudio.chess_viking_variants.api.pgn.PGNParser;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,9 @@ public class PlayContext {
     @Nullable
     private static PlayContext instance;
 
+    /*Future fields :
+        - Players
+     */
     private final Collection<Field<?>> fields = new ArrayList<>(List.of(
             new Field<>("turn", Integer.class, 0),
             new Field<>("player-count", Integer.class, 2),

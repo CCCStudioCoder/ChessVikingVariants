@@ -1,6 +1,7 @@
-package com.cccstudio.chess_viking_variants.api;
+package com.cccstudio.chess_viking_variants.api.pgn;
 
-import com.cccstudio.chess_viking_variants.api.vanilla.Pawn;
+import com.cccstudio.chess_viking_variants.api.*;
+import com.cccstudio.chess_viking_variants.api.vanilla.pieces.Pawn;
 
 import java.util.Set;
 
@@ -49,7 +50,7 @@ public interface Notation {
 
     static Notation precision(Board board, CasePos from, CasePos to) {
         PieceInstance movingPiece = board.getPieceAt(from);
-        Set<Move> available = movingPiece.pieceType.getLegalMoves(to, movingPiece.owner, board);
+        Set<Move> available = movingPiece.pieceType.getPseudoMoves(to, movingPiece.owner, board);
 
         StringBuilder result = new StringBuilder();
         int state = 0;

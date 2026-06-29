@@ -13,8 +13,12 @@ public class ContinuousDirMask extends DirMask {
         super(dirs);
     }
 
+    public static ContinuousDirMask of(DirMask dirMask) {
+        return new ContinuousDirMask(dirMask.dirs);
+    }
+
     @Override
-    protected Set<CasePos> performAt(Board board, int x, int y, int player, CasePos dir) {
+    protected Set<CasePos> performAt(Board board, int x, int y, byte player, CasePos dir) {
         Set<CasePos> result = new HashSet<>();
         while (board.containsPieceAt(x, y)) {
             PieceInstance piece = board.getPieceAt(x, y);

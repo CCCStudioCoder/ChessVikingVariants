@@ -1,6 +1,7 @@
 package com.cccstudio.chess_viking_variants.api.vanilla;
 
 import com.cccstudio.chess_viking_variants.api.*;
+import com.cccstudio.chess_viking_variants.api.pgn.Notation;
 
 import java.util.Map;
 import java.util.Set;

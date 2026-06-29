@@ -1,11 +1,12 @@
 package com.cccstudio.chess_viking_variants.api;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.Set;
 
 public interface PieceType {
 
-    Set<Move> getLegalMoves(CasePos from, int player, Board board);
+    Set<Move> getPseudoMoves(CasePos from, byte player, Board board);
 
     URL getImagePath();
 
@@ -13,12 +14,12 @@ public interface PieceType {
 
     PieceType EMPTY = new PieceType() {
         @Override
-        public Set<Move> getLegalMoves(CasePos target, int player, Board board) {
+        public Set<Move> getPseudoMoves(CasePos target, byte player, Board board) {
             return Set.of();
         }
         @Override
         public URL getImagePath() {
-            return getClass().getResource("/empty.png");
+            return Objects.requireNonNull(getClass().getResource("/empty.png"));
         }
         @Override
         public String getSymbol(Languages lang) {

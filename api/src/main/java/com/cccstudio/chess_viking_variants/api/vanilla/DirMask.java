@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class DirMask {
 
-    protected final Set<CasePos> dirs;
+    public final Set<CasePos> dirs;
 
     public DirMask(Set<CasePos> dirs) {
         this.dirs = dirs;
@@ -32,7 +32,7 @@ public class DirMask {
      * @return
      * The list of all the cases that match with the mask at the given coordinates.
      */
-    protected Set<CasePos> performAt(Board board, int x, int y, int player, CasePos dir) {
+    protected Set<CasePos> performAt(Board board, int x, int y, byte player, CasePos dir) {
         if(board.containsPieceAt(x, y)) {
             if(board.getPieceAt(x, y).owner != player) return Set.of(new CasePos(x, y));
         }
@@ -44,8 +44,8 @@ public class DirMask {
      * @return
      * All the cases that the mask covers from the given coordinate.
      */
-    public Set<CasePos> applyAt(CasePos coords, int player) {
-        return this.applyAt(coords.x(), coords.y(), player);
+    public Set<CasePos> applyAt(CasePos coords, byte player, Board board) {
+        return this.applyAt(coords.x(), coords.y(), player, board);
     }
 
     /**
@@ -53,9 +53,8 @@ public class DirMask {
      * @return
      * All the cases that the mask covers from the given coordinate.
      */
-    public Set<CasePos> applyAt(int x, int y, int player) {
+    public Set<CasePos> applyAt(int x, int y, byte player, Board board) {
         Set<CasePos> result = new HashSet<>();
-        Board board = PlayContext.getBoard();
         for(CasePos dir : dirs){
             int newX = x + dir.x();
             int newY = y + dir.y();

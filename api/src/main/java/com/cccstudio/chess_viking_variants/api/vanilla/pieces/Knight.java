@@ -1,10 +1,8 @@
-package com.cccstudio.chess_viking_variants.api.vanilla;
+package com.cccstudio.chess_viking_variants.api.vanilla.pieces;
 
-import com.cccstudio.chess_viking_variants.api.Languages;
-import com.cccstudio.chess_viking_variants.api.Board;
-import com.cccstudio.chess_viking_variants.api.CasePos;
-import com.cccstudio.chess_viking_variants.api.Move;
-import com.cccstudio.chess_viking_variants.api.PieceType;
+import com.cccstudio.chess_viking_variants.api.*;
+import com.cccstudio.chess_viking_variants.api.vanilla.DirMask;
+import com.cccstudio.chess_viking_variants.api.vanilla.SimpleMove;
 
 import java.net.URL;
 import java.util.Objects;
@@ -24,8 +22,8 @@ public class Knight implements PieceType {
     ));
 
     @Override
-    public Set<Move> getLegalMoves(CasePos from, int player, Board board) {
-        return SimpleMove.around(from, MASK.applyAt(from, player));
+    public Set<Move> getPseudoMoves(CasePos from, byte player, Board board) {
+        return SimpleMove.around(from, MASK.applyAt(from, player, board));
     }
 
     @Override
