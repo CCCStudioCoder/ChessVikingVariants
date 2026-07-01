@@ -18,16 +18,21 @@ public class Queen implements PieceType {
     }
 
     @Override
-    public URL getImagePath() {
-        return Objects.requireNonNull(getClass().getResource("/pieces/queen.png"));
-    }
-
-    @Override
     public String getSymbol(Languages lang) {
         return switch (lang) {
             case ENGLISH -> "Q";
             case FRENCH, SPANISH -> "D";
         };
+    }
+
+    @Override
+    public String getName() {
+        return "Queen";
+    }
+
+    @Override
+    public Class<? extends PieceType> clazz() {
+        return Queen.class;
     }
 
 }

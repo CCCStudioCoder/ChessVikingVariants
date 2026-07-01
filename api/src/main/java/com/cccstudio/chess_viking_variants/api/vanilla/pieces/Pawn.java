@@ -14,13 +14,18 @@ public class Pawn implements PieceType {
     }
 
     @Override
-    public URL getImagePath() {
-        return Objects.requireNonNull(getClass().getResource("/pieces/pawn.png"));
+    public String getSymbol(Languages lang) {
+        return "";
     }
 
     @Override
-    public String getSymbol(Languages lang) {
-        return "";
+    public String getName() {
+        return "Paw";
+    }
+
+    @Override
+    public Class<? extends PieceType> clazz() {
+        return Pawn.class;
     }
 
 }

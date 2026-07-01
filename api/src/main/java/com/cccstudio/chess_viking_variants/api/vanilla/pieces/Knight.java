@@ -27,16 +27,21 @@ public class Knight implements PieceType {
     }
 
     @Override
-    public URL getImagePath() {
-        return Objects.requireNonNull(getClass().getResource("/pieces/knight.png"));
-    }
-
-    @Override
     public String getSymbol(Languages lang) {
         return switch (lang) {
             case ENGLISH -> "K";
             case SPANISH, FRENCH -> "C";
         };
+    }
+
+    @Override
+    public String getName() {
+        return "Knight";
+    }
+
+    @Override
+    public Class<? extends PieceType> clazz() {
+        return Knight.class;
     }
 
 }

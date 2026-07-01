@@ -1,6 +1,6 @@
 package com.cccstudio.chess_viking_variants.api;
 
-import java.net.URL;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Set;
 
@@ -8,9 +8,15 @@ public interface PieceType {
 
     Set<Move> getPseudoMoves(CasePos from, byte player, Board board);
 
-    URL getImagePath();
+    default InputStream getImage() {
+        return Objects.requireNonNull(clazz().getResourceAsStream("/pieces/" + getName() + ".png"));
+    }
 
     String getSymbol(Languages lang);
+
+    String getName();
+
+    Class<? extends PieceType> clazz();
 
     PieceType EMPTY = new PieceType() {
         @Override
@@ -18,21 +24,25 @@ public interface PieceType {
             return Set.of();
         }
         @Override
-        public URL getImagePath() {
-            return Objects.requireNonNull(getClass().getResource("/empty.png"));
-        }
-        @Override
         public String getSymbol(Languages lang) {
             return "";
+        }
+        @Override
+        public String getName() {
+            return "";
+        }
+        @Override
+        public Class<? extends PieceType> clazz() {
+            return PieceType.class;
         }
     };
 
     /**
-     * This is a default implementation of the classic equals function. it's based on the image path of the piece.
-     * If your {@link PieceType} can have the same image as another, you should implement this method.
+     * This is a default implementation of the classic equals function. it's based on the name of the piece.
+     * If your {@link PieceType} can have the same name as another, you should implement this method.
      */
     default boolean equals(PieceType other) {
-        return this.getImagePath().getPath().equals(other.getImagePath().getPath());
+        return this.getName().equals(other.getName());
     }
 
 }

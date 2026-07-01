@@ -23,17 +23,22 @@ public class Bishop implements PieceType {
     }
 
     @Override
-    public URL getImagePath() {
-        return Objects.requireNonNull(getClass().getResource("pieces/bishop.png"));
-    }
-
-    @Override
     public String getSymbol(Languages lang) {
         return switch (lang) {
             case ENGLISH -> "B";
             case SPANISH -> "A";
             case FRENCH -> "F";
         };
+    }
+
+    @Override
+    public String getName() {
+        return "Bishop";
+    }
+
+    @Override
+    public Class<? extends PieceType> clazz() {
+        return Bishop.class;
     }
 
 }

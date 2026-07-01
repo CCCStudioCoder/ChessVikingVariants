@@ -23,16 +23,21 @@ public class Rook implements PieceType {
     }
 
     @Override
-    public URL getImagePath() {
-        return Objects.requireNonNull(getClass().getResource("/pieces/rook.png"));
-    }
-
-    @Override
     public String getSymbol(Languages lang) {
         return switch (lang) {
             case ENGLISH -> "R";
             case FRENCH, SPANISH -> "T";
         };
+    }
+
+    @Override
+    public String getName() {
+        return "Rook";
+    }
+
+    @Override
+    public Class<? extends PieceType> clazz() {
+        return Rook.class;
     }
 
 }
