@@ -41,6 +41,11 @@ public class ClassicBoard extends Board {
     }
 
     @Override
+    public int size() {
+        return 64;
+    }
+
+    @Override
     public Board clone() {
         Board cloned = new ClassicBoard();
         cloned.bitboards = this.bitboards;

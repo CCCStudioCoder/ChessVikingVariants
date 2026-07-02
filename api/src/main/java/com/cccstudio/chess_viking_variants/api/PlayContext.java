@@ -21,7 +21,7 @@ public class PlayContext {
         - Players
      */
     private final Collection<Field<?>> fields = new ArrayList<>(List.of(
-            new Field<>("turn", Integer.class, 0),
+            new Field<>("turn", Byte.class, (byte) 0),
             new Field<>("player-count", Integer.class, 2),
             new Field<>("board", Board.class, null)
     ));
@@ -105,9 +105,9 @@ public class PlayContext {
 
     /* Utility functions */
 
-    public int nextTurn() {
-        int newTurn = this.findData("turn", Integer.class) + 1;
-        if(newTurn == this.findData("player-count", Integer.class)) {
+    public byte nextTurn() {
+        byte newTurn = (byte) (this.findData("turn", Byte.class) + 1);
+        if(newTurn == this.findData("player-count", Byte.class)) {
             newTurn = 0;
         }
         return newTurn;

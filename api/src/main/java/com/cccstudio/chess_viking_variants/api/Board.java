@@ -31,6 +31,8 @@ public abstract class Board implements Cloneable {
 
     public abstract int height();
 
+    public abstract int size();
+
     public boolean containsPieceAt(int x, int y) {
         return setup.contains(new CasePos(x, y));
     }

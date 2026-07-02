@@ -2,6 +2,10 @@ package com.cccstudio.chess_viking_variants.api;
 
 import com.cccstudio.chess_viking_variants.api.vanilla.DirMask;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
 /**
  * A {@link CasePos} setup object is used to send positioning data to the renderer.
  * @see Board#bitboards
@@ -46,6 +50,14 @@ public record CasePos(int x, int y) {
 
     public String notation() {
         return String.format("%s%s", field(), row());
+    }
+
+    public int toIndex() {
+        Board board = PlayContext.getBoard();
+        List<CasePos> setup = board.setup.stream().toList();
+        return IntStream.range(0, board.size())
+                .filter(i -> setup.get(i).equals(this))
+                .findFirst().orElseThrow(() -> new CaseOutOfBoardException(x, y));
     }
 
 }
