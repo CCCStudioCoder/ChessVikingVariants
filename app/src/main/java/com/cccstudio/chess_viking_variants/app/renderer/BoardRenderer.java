@@ -30,13 +30,25 @@ public class BoardRenderer {
 
     public String createClickBehavior(Board board) {
         return """
-               int previously clicked = -1;
-               function caseClicked(index) {
+               let clicked = -1;
+               
+               async function caseClicked(index) {
+                   if(clicked != -1) {
+                        const legal = await fetch(`/api/is_legal?from=${clicked}&to=${index}`)
+                            .then(r -> r.json());
+                        if(legal) {
+                            clicked = -1
+                            render();
+                        }
+                   } else {
+                        clicked = index;
+                   }
+               }
                """;
     }
 
     public String getClickBehavior(Board board, int index) {
-        return "() => caseClicked(%s)".formatted(index);
+        return "async () => await caseClicked(%s)".formatted(index);
     }
 
     public HTMLDiv renderCase(Board board, int index) {

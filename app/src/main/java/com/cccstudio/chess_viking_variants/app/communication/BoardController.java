@@ -11,7 +11,7 @@ public class BoardController {
 
     BoardRenderer renderer = new BoardRenderer();
 
-    @GetMapping("/board")
+    @GetMapping("/api/board")
     @ResponseBody
     public String board(Board board){
         return renderer.render(board);

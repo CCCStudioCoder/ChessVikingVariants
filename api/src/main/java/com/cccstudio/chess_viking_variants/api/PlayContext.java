@@ -117,6 +117,10 @@ public class PlayContext {
         return instance.findData("board", Board.class);
     }
 
+    public Set<Move> getAvailableMoves() {
+        return getBoard().getAvailableMoves(findData("turn", Byte.class));
+    }
+
     /**
      * A {@link Field} is a piece of metadata accessible by its {@link Field#name}.
      * If its {@link Field#value} is {@code null}, it's considered empty, and if it needs to be considered empty,
